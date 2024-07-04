@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from .models import Question, Answer
 from .serializers import QuestionSerializer, AnswerSerializer
+from .paginations import OffsetLimitWithMaxPagination
 
 
 class ApiRoot(APIView):
@@ -16,6 +17,7 @@ class ApiRoot(APIView):
 class QuestionLC(generics.ListCreateAPIView):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
+    pagination_class = OffsetLimitWithMaxPagination
 
 class QuestionRUD(generics.RetrieveUpdateDestroyAPIView):
     queryset= Question.objects.all()
