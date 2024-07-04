@@ -1,12 +1,19 @@
 import './App.css'
+import { Route, Routes } from 'react-router-dom'
+import Home from './pages/Home'
+import QuestionDetail from './pages/QuestionDetail'
+import QuestionCreate from './pages/QuestionCreate'
+import Layout from './pages/Layout'
 
 function App() {
   return (
-    <>
-      <div>
-        hello world!
-      </div>
-    </>
+    <Routes>
+      <Route path="/" element={<Layout/>}>
+        <Route index element={<Home/>}/>
+        <Route path="detail/:question_id" element={<QuestionDetail/>}/>
+        <Route path="question-create" element={<QuestionCreate/>}/>
+      </Route>
+    </Routes>      
   )
 }
 
