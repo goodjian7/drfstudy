@@ -38,7 +38,7 @@ const QuestionCreate = ()=>{
         const sendCreateRequest = async()=>{
             let endpoint = apiUrl+`/api/pybo/question/`        
             let response = await axios.post(endpoint, questionInfo)   
-            if(response.status!==204){
+            if(response.status!=201){
                 setErrorMessage("서버에서 처리되지 않았습니다")
                 return 
             }          

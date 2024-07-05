@@ -38,9 +38,9 @@ const QuestionDetail = () => {
                 return
             }
 
-            let endpoint=apiUrl+`/api/answer/create/${question_id}`
-            let response = await axios.post(endpoint, {content:newAnswerContent})
-            if(response.status!=204){
+            let endpoint=apiUrl+`/api/pybo/answer/`
+            let response = await axios.post(endpoint, {content:newAnswerContent, question:question_id})
+            if(response.status!=201){
                 setErrorMessage("서버에서 잘못처리되었습니다.")
                 return
             }

@@ -15,7 +15,7 @@ class ApiRoot(APIView):
         })
 
 class QuestionLC(generics.ListCreateAPIView):
-    queryset = Question.objects.all()
+    queryset = Question.objects.all().order_by("-create_date")
     serializer_class = QuestionSerializer
     pagination_class = OffsetLimitWithMaxPagination
 
