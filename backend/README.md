@@ -1,34 +1,8 @@
 # what's done  
-python manage.py createsuperuser (admin/admin)  
+common/views.py수정하여 docs에서 registerUser api가 입력폼 표기  
+common/views.py수정하여 username중복시 에러메시지 + 400 response  
+common/serializers.py 수정하여 동일이름의 유저가 있으면 예외발생하도록 수정  
 
-python ./manage.py common  
-config/settings.py INSTALLED_APPS 앱추가  
-
-common/serializers.py에 유저생성용 serializer추가  
-common/views.py에 apiRoot용 뷰추가  
-common/views.py에 유저 등록 뷰 추가 (serializer사용)  
-common/urls.py 유저생성 url추가  
-config/urls.py에  common/urls.py 추가  
-
-/api/common/ 에서 apiRoot페이지 확인  
-/api/common/register/에서 유저생성 확인  
-{"username":"newusername0", "pw0":"123123", "pw1":"123123"}  
-
-# drf serializer 
-- write to db : dict -> ormObj -> db
-
-```
-serializer = Serializer(data={})
-if serializer.is_valid():
-    ormObj = serializer.save()
-```
-
-- read from db : db -> ormObj(s) -> dict or list[dict]
-
-```
-serializer = Serializer([{},{}], many=True)
-serializer.data
-```
-
-- serializer override functions  
-  validate, create
+pip install djangorestframework-simplejwt  
+common/urls.py simple-jwt 설정  
+config/settings.py수정 simple-jwt 설정  

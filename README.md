@@ -36,6 +36,6 @@ wikidocs jumptofastapi pybo 프로젝트를 drf+react로 구현합니다.
 - UI Question Create  
 - UI Question Detail  
 - UI Answer Create UI 
-- 유저생성
-- 유저로그인
-- 유저로그아웃
+- 유저생성 API
+- 유저생성 API docs에서 입력폼 제공
+

@@ -1,15 +1,26 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 
 '''
-# dict -> ormObj -> db
+# drf serializer 
+- write to db : dict -> ormObj -> db
+
+```
 serializer = Serializer(data={})
 if serializer.is_valid():
     ormObj = serializer.save()
+```
 
-# db -> ormObj or ormObjs -> dict or list[dict]
+- read from db : db -> ormObj(s) -> dict or list[dict]
+
+```
 serializer = Serializer([{},{}], many=True)
 serializer.data
+```
+
+- serializer override functions  
+  validate, create
 '''
 
 class UserRegistrationSerializer(serializers.Serializer):
@@ -21,11 +32,22 @@ class UserRegistrationSerializer(serializers.Serializer):
         username = data.get("username","").strip()
         pw0 = data.get("pw0","").strip()
         pw1 = data.get("pw1","").strip()
-        
-        if username=="" or pw0 == "" or pw1 == "":
-            raise serializers.ValidationError("id, pw0, pw1 cannot be empty string")
+                
+        print(username)
+        isUserExist = False
+        try:
+            user = User.objects.get(username=username)            
+            isUserExist = True
+        except ObjectDoesNotExist:            
+            isUserExist = False        
 
-        if pw0 != pw1:
+        if username=="" or pw0 == "" or pw1 == "":            
+            raise serializers.ValidationError("id, pw0, pw1 cannot be empty string")
+        
+        if isUserExist:            
+            raise serializers.ValidationError("same username is already used")
+
+        if pw0 != pw1:            
             raise serializers.ValidationError("Passwords do not match.")
                 
         return data
