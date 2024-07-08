@@ -21,10 +21,10 @@ const Layout = ()=>{
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                     <li className="nav-item">
-                        <Link className="nav-link" to="/user-create" style={{whiteSpace:"nowrap"}}>회원가입</Link>
+                        <Link className="nav-link" to="/user/create" style={{whiteSpace:"nowrap"}}>회원가입</Link>
                     </li>
                     <li className="nav-item">
-                        <Link className="nav-link" to="/user-login" style={{whiteSpace:"nowrap"}}>로그인</Link>
+                        <Link className="nav-link" to="/user/login" style={{whiteSpace:"nowrap"}}>로그인</Link>
                     </li>
                 </ul>
                 </div>

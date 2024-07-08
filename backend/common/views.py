@@ -25,10 +25,8 @@ class RegisterUser(GenericAPIView):
             user = serializer.save()
             return Response(UserRegistrationSerializer(user).data, status=status.HTTP_201_CREATED)
         
-        except ValidationError as e:            
-            print(request.data)
-            errorMessage = e.detail["non_field_errors"][0]
-            return Response({"error":errorMessage}, status=status.HTTP_400_BAD_REQUEST)
+        except ValidationError as e:                
+            return Response({"error":e.detail}, status=status.HTTP_400_BAD_REQUEST)
 
         
         

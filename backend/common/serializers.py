@@ -31,9 +31,8 @@ class UserRegistrationSerializer(serializers.Serializer):
     def validate(self, data):
         username = data.get("username","").strip()
         pw0 = data.get("pw0","").strip()
-        pw1 = data.get("pw1","").strip()
-                
-        print(username)
+        pw1 = data.get("pw1","").strip()               
+        
         isUserExist = False
         try:
             user = User.objects.get(username=username)            
