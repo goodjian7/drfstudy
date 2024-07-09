@@ -54,6 +54,20 @@ class UserRegistrationSerializer(serializers.Serializer):
     def create(self, validated_data):
         user = User.objects.create_user(
             username=validated_data['username'],
-            password=validated_data['pw0']
+            password=validated_data['pw0'],
         )
         return user
+    
+class ExpireTokenSerializer(serializers.Serializer):
+    refreshToken = serializers.CharField()
+
+    def validate(self, data):
+        refreshToken=data.get("refreshToken", "").strip()
+
+        if refreshToken == "":            
+            raise serializers.ValidationError("refreshToken is empty")
+        
+        return data
+    
+    def create(self, validated_data):        
+        return validated_data["refreshToken"]
