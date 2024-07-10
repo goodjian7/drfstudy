@@ -17,12 +17,12 @@ blacklist 테이블이 생성되도록
 python manage.py makemigrations  
 python manage.py migrate
 
-common/serializers.py에 ExpireToken뷰에서 쓸 시리얼라이저 추가
+common/serializers.py에 ExpireToken뷰에서 쓸 시리얼라이저 추가  
 common/views.py에 로그아웃 뷰 추가후 post로 전달받은 refreshToken blacklist에 추가하도록 설정  
-common/urls.py에 로그아웃 url추가 
+common/urls.py에 로그아웃 url추가  
 
-common/views.py에 registerUser View가 authentication없이 접근가능하도록 변경
-common/views.py에 ExpireToken뷰도 default Auth와 Permission 사용하도록 변경
+common/views.py에 registerUser View가 authentication없이 접근가능하도록 변경  
+common/views.py에 ExpireToken뷰도 default Auth와 Permission 사용하도록 변경  
 
 
 
