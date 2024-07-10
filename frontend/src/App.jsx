@@ -5,6 +5,7 @@ import QuestionDetail from './pages/QuestionDetail'
 import QuestionCreate from './pages/QuestionCreate'
 import Layout from './pages/Layout'
 import UserCreate from "./pages/UserCreate"
+import UserLogin from "./pages/UserLogin"
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="detail/:question_id" element={<QuestionDetail/>}/>
         <Route path="question-create" element={<QuestionCreate/>}/>
         <Route path="user/create" element={<UserCreate/>}/>
+        <Route path="user/login" element={<UserLogin/>}/>
       </Route>
     </Routes>      
   )

@@ -1,18 +1,12 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-//import { Link, useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
-// import classNames from "classnames";
-// import { produce } from "immer";
-// import { rangeFromTo } from "../utils";
-// import QuestionCreate from "./QuestionCreate";
 import QuestionList from "./QuestionList";
 
 const Home = () => {    
     const apiUrl = import.meta.env.VITE_API_URL
     const [searchParams, setSearchParams] = useSearchParams()    
-    const pageIndex = Number(searchParams.get('page')) || 0         
-    console.log("Home rednered, pageIndex : " + pageIndex)
+    const pageIndex = Number(searchParams.get('page')) || 0             
 
     let [displayCount, setDisplayCount] = useState(10)    
     let [questionListInfo, setQuestionListInfo] = useState({
@@ -34,8 +28,7 @@ const Home = () => {
         }
     }
 
-    useEffect(()=>{
-        console.log("effect from Home")
+    useEffect(()=>{        
         getQuestionList()
     },[pageIndex, displayCount])
 

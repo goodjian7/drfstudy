@@ -5,14 +5,12 @@ import {rangeFromTo} from "../utils"
 import moment from 'moment/min/moment-with-locales'
 moment.locale("ko")
 
-const QuestionList = ({questionList, pageIndex, displayCount, totalCount,})=>{
-    console.log("QuestionList is rendered")
+const QuestionList = ({questionList, pageIndex, displayCount, totalCount,})=>{    
     let minPageIndex = 0
     let maxPageIndex = Math.ceil(totalCount/displayCount)    
     const navigate = useNavigate()   
 
-    questionList = questionList || []
-    console.log(questionList)
+    questionList = questionList || []    
     return (
         <>  
             <div className="container my-3">                
