@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios"
+import authAxios from "../utils/authAxios";
 import moment from 'moment/min/moment-with-locales'
 moment.locale("ko")
 
@@ -16,8 +17,10 @@ const QuestionDetail = () => {
 
     const getQuestionInfo = async ()=>{
         try{
-            let endpoint = apiUrl+`/api/pybo/question/${question_id}`            
-            let response=await axios.get(endpoint)            
+            let endpoint = apiUrl+`/api/pybo/question/${question_id}/`            
+            let response=await axios.get(endpoint)
+            console.log("getQuestionInfo")                    
+            console.log(response.data)
             setQuestionInfo(response.data)        
             setAnswerList(response.data.answers)    
         }
@@ -38,18 +41,16 @@ const QuestionDetail = () => {
                 return
             }
 
-            let endpoint=apiUrl+`/api/pybo/answer/`
-            let response = await axios.post(endpoint, {content:newAnswerContent, question:question_id})
-            if(response.status!=201){
-                setErrorMessage("서버에서 잘못처리되었습니다.")
-                return
-            }
-            setErrorMessage("")
+            // let endpoint=apiUrl+`/api/pybo/answer/`
+            // let response = await axios.post(endpoint,           
+            let response = await authAxios.post("/api/pybo/answer/", {content:newAnswerContent, question:question_id})  
             getQuestionInfo()
-            setNewAnswerContent("")
+            setErrorMessage("")
+            setNewAnswerContent("")                    
         }
         catch(error){
-            console.log("error while onanswerAddClicked")
+            setErrorMessage("서버에서 잘못처리되었습니다.")
+            console.log("서버에서 잘못처리되었습니다.")
         }        
     }
 

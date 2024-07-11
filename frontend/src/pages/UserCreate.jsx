@@ -13,8 +13,7 @@ const UserCreate = ()=>{
     const createNewUser = async()=>{        
         let postEndpoint = apiUrl + "/api/common/register/"
         try{
-            let response = await axios.post(postEndpoint, userInfo)
-            console.log("dd")
+            let response = await axios.post(postEndpoint, userInfo)            
             if(response.status === 201){
                 navigate("/")
             }            

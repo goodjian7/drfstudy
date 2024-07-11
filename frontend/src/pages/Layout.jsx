@@ -1,7 +1,25 @@
-import { Outlet, Link } from "react-router-dom"
+import { Outlet, Link, useNavigate } from "react-router-dom"
+import authAxios, { isTokenExpired } from "../utils/authAxios"
 
 
-const Layout = ()=>{    
+
+const Layout = ()=>{       
+    const navigate = useNavigate()
+    const refreshToken = localStorage.getItem("refreshToken")
+    let bRefreshTokenExpired = isTokenExpired(refreshToken)
+
+    const onLogoutClicked = async (e)=>{
+        try{
+            let response = await authAxios.post("/api/common/token/expire/", {refreshToken})
+            
+        }catch(e){
+            
+        }
+        localStorage.removeItem("accessToken")
+        localStorage.removeItem("refreshToken")
+        navigate("/")
+    }
+    
     return(
         <>
             <nav className="navbar navbar-expand-lg navbar-light bg-light border-bottom">
@@ -24,7 +42,12 @@ const Layout = ()=>{
                         <Link className="nav-link" to="/user/create" style={{whiteSpace:"nowrap"}}>회원가입</Link>
                     </li>
                     <li className="nav-item">
-                        <Link className="nav-link" to="/user/login" style={{whiteSpace:"nowrap"}}>로그인</Link>
+                        
+                        {
+                            bRefreshTokenExpired ? 
+                            <Link className="nav-link" to="/user/login" style={{whiteSpace:"nowrap"}}>로그인</Link> 
+                            :<Link className="nav-link" onClick={onLogoutClicked}>로그아웃</Link>                            
+                        }
                     </li>
                 </ul>
                 </div>

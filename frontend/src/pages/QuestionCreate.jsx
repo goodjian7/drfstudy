@@ -1,19 +1,14 @@
 import { useState } from "react"
 import { isNullOrEmptyOrSpace } from "../utils"
 import { produce} from "immer"
-import axios from "axios"
 
+import authAxios from "../utils/authAxios"
 
-const QuestionCreate = ()=>{
-    const apiUrl = import.meta.env.VITE_API_URL 
+const QuestionCreate = ()=>{    
     let [errorMessage, setErrorMessage] = useState("")
     let [questionInfo, setQuestionInfo] = useState({subject:"", content:""})
 
-    const onQuestionSubjectChanged = (e)=>{
-        // let nextState = {...questionInfo, 
-        //     subject:e.target.value
-        // }        
-
+    const onQuestionSubjectChanged = (e)=>{        
         let nextState=produce(questionInfo, draft=>{
             draft.subject = e.target.value
         })
@@ -36,20 +31,21 @@ const QuestionCreate = ()=>{
         }
 
         const sendCreateRequest = async()=>{
-            let endpoint = apiUrl+`/api/pybo/question/`        
-            let response = await axios.post(endpoint, questionInfo)   
-            if(response.status!=201){
-                setErrorMessage("서버에서 처리되지 않았습니다")
-                return 
-            }          
-            else{
-                setErrorMessage("등록됨")
-                let newQuestionInfo=produce(questionInfo, (draft)=>{
-                    draft.subject=""
-                    draft.content=""
-                })
-                setQuestionInfo(newQuestionInfo)
+            try{
+                let endpoint = `/api/pybo/question/`        
+                let response = await authAxios.post(endpoint, questionInfo)   
+                if(response.status===201){                
+                    setErrorMessage("등록됨")
+                    let newQuestionInfo=produce(questionInfo, (draft)=>{
+                        draft.subject=""
+                        draft.content=""
+                    })
+                    setQuestionInfo(newQuestionInfo)
+                }
+            }catch(e){                
+                setErrorMessage("질문등록중 오류가 발생되었습니다.")
             }
+
         }
         sendCreateRequest()
     }   

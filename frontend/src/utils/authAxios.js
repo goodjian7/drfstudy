@@ -15,22 +15,29 @@ const isTokenExpired = (token) => {
     }).join(''));
   
     const jwt = JSON.parse(jsonPayload);
-    console.log("isTokenExpired")
-    console.log(jwt)
-    const exp = jwt.exp * 1000;
-    return Date.now() > exp;
+    
+    const exp = jwt.exp * 1000;  
+    const bExpired = Date.now() > exp  
+    console.log("isTokenExpired : " + bExpired)    
+    return bExpired;
 };
 
 // 토큰 리프레쉬 함수
 const refreshToken = async () => {
     try {
+      const apiSvr = import.meta.env.VITE_API_URL        
       const refresh = localStorage.getItem('refreshToken');
-      const response = await authAxios.post('/api/common/token/refresh', {
-        refresh,
-      });
+      const apiEndpoint = apiSvr + '/api/common/token/refresh/'      
+      console.log("refresh endpoint : " + apiEndpoint)
+      const response = await axios.post(apiEndpoint, {refresh})     
   
-      const { access } = response.data;
-      localStorage.setItem('accessToken', access);
+      const { access_token, refresh_token } = response.data;
+      localStorage.setItem('accessToken', access_token)
+      localStorage.setItem('refreshToken', refresh_token)
+
+      console.log("refresh success")
+      console.log({access_token, refresh_token})
+
       return access;
     } catch (error) {
       console.error('Token refresh failed:', error);
@@ -46,10 +53,13 @@ authAxios.interceptors.request.use(
         // 토큰 만료 확인 및 갱신
         if (isTokenExpired(accessToken)) {
             try {
+                console.log("accessToken is expired")
                 accessToken = await refreshToken();
             } 
             catch (error) {
-                // 갱신 실패시                
+                // 갱신 실패시           
+                localStorage.removeItem("accessToken")     
+                localStorage.removeItem("refreshToken")
                 return Promise.reject(error);
             }
         }
@@ -66,3 +76,4 @@ authAxios.interceptors.request.use(
 );
 
 export default authAxios;
+export {isTokenExpired} 
