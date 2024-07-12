@@ -1,4 +1,3 @@
-import axios from "axios"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
@@ -13,7 +12,7 @@ const UserCreate = ()=>{
     const createNewUser = async()=>{        
         let postEndpoint = apiUrl + "/api/common/register/"
         try{
-            let response = await axios.post(postEndpoint, userInfo)            
+            let response = await authAxios.post(postEndpoint, userInfo)            
             if(response.status === 201){
                 navigate("/")
             }            

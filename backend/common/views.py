@@ -35,7 +35,8 @@ class RegisterUser(GenericAPIView):
         
 class ExpireToken(GenericAPIView):
     serializer_class = ExpireTokenSerializer    
-
+    permission_classes = [AllowAny]
+    
     def post(self, request):
         try:
             serializer = ExpireTokenSerializer(data=request.data)                

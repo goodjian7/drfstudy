@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { useSearchParams } from "react-router-dom";
 import QuestionList from "./QuestionList";
 import authAxios from "../utils/authAxios";
@@ -17,10 +16,7 @@ const Home = () => {
     
     const getQuestionList = async ()=>{
         try{                      
-            //let response = await authAxios.get(`/api/pybo/question/?offset=${pageIndex*displayCount}&limit=${displayCount}`)      
-            let apiSvr = import.meta.env.VITE_API_URL                              
-            let response = await axios.get(apiSvr+`/api/pybo/question/?offset=${pageIndex*displayCount}&limit=${displayCount}`)
-
+            let response = await authAxios.get(`/api/pybo/question/?offset=${pageIndex*displayCount}&limit=${displayCount}`)                  
             let newQuestionListInfo = {questionList:response.data.results, totalCount:Number(response.data.count)}                        
             setQuestionListInfo(newQuestionListInfo)           
         }

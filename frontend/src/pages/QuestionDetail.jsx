@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios"
 import authAxios from "../utils/authAxios";
 import moment from 'moment/min/moment-with-locales'
 moment.locale("ko")
@@ -17,10 +16,8 @@ const QuestionDetail = () => {
 
     const getQuestionInfo = async ()=>{
         try{
-            let endpoint = apiUrl+`/api/pybo/question/${question_id}/`            
-            let response=await axios.get(endpoint)
-            console.log("getQuestionInfo")                    
-            console.log(response.data)
+            let endpoint = `/api/pybo/question/${question_id}/`            
+            let response=await authAxios.get(endpoint)            
             setQuestionInfo(response.data)        
             setAnswerList(response.data.answers)    
         }
@@ -41,16 +38,18 @@ const QuestionDetail = () => {
                 return
             }
 
-            // let endpoint=apiUrl+`/api/pybo/answer/`
-            // let response = await axios.post(endpoint,           
             let response = await authAxios.post("/api/pybo/answer/", {content:newAnswerContent, question:question_id})  
-            getQuestionInfo()
+            await getQuestionInfo()
             setErrorMessage("")
             setNewAnswerContent("")                    
         }
         catch(error){
-            setErrorMessage("서버에서 잘못처리되었습니다.")
-            console.log("서버에서 잘못처리되었습니다.")
+            if(error.response.status === 401){
+                setErrorMessage("로그인후 사용해주세요")
+            }
+            else{
+                setErrorMessage("답변등록 중 에러가 발생했습니다")
+            }            
         }        
     }
 

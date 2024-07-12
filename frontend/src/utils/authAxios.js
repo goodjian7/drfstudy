@@ -5,6 +5,21 @@ const authAxios = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
 });
 
+const isLoggedIn = async ()=>{
+    let refreshToken = localStorage.getItem("refreshToken")
+    if(!refreshToken){
+        return false
+    }
+    try{        
+        let response = await axios.post(import.meta.env.VITE_API_URL+`/api/common/token/verify/`,{token:refreshToken})
+        if(response.status===200)
+            return true
+    }catch(e){
+        return false
+    }
+    return true
+}
+
 // 토큰만료 검사함수
 const isTokenExpired = (token) => {
     if (!token) return true;  
@@ -17,8 +32,7 @@ const isTokenExpired = (token) => {
     const jwt = JSON.parse(jsonPayload);
     
     const exp = jwt.exp * 1000;  
-    const bExpired = Date.now() > exp  
-    console.log("isTokenExpired : " + bExpired)    
+    const bExpired = Date.now() > exp      
     return bExpired;
 };
 
@@ -49,22 +63,27 @@ const refreshToken = async () => {
 authAxios.interceptors.request.use(
     async (config) => {
         let accessToken = localStorage.getItem('accessToken');
+        
+        // 로컬스토리지에 access토큰이 비어 있으면 로그아웃상태 헤더를 추가하지 않고 사용
+        if( !accessToken ){            
+            return config
+        }
 
-        // 토큰 만료 확인 및 갱신
+        // accessToken이 있지만 만료되었다면. accessToken갱신
         if (isTokenExpired(accessToken)) {
             try {
-                console.log("accessToken is expired")
+                console.log("accessToken exist in localStorage but is expired")
                 accessToken = await refreshToken();
             } 
             catch (error) {
-                // 갱신 실패시           
+                // 갱신 실패시 로컬스토리지의 토큰을 제거하고 auth옵션을 사용하지 않는다.           
                 localStorage.removeItem("accessToken")     
                 localStorage.removeItem("refreshToken")
-                return Promise.reject(error);
+                return config
             }
         }
 
-        // 만료되지 않은 accessToken이 있으면 사용
+        // accessToken을 헤더에 넣어 사용
         if (accessToken) {
         config.headers['Authorization'] = `Token ${accessToken}`;
         }
@@ -76,4 +95,4 @@ authAxios.interceptors.request.use(
 );
 
 export default authAxios;
-export {isTokenExpired} 
+export {isTokenExpired, isLoggedIn} 

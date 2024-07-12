@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Navigate, useNavigate } from "react-router-dom"
-import axios from "axios"
+import authAxios from "../utils/authAxios"
 
 const UserLogin=()=>{
     const apiUrl = import.meta.env.VITE_API_URL 
@@ -11,11 +11,10 @@ const UserLogin=()=>{
     const onSubmit = async (e)=>{
         e.preventDefault()
         try{
-            let response = await axios.post(apiUrl+"/api/common/token/issue/", credential)
+            let response = await authAxios.post("/api/common/token/issue/", credential)
             const {access, refresh} = response.data 
             localStorage.setItem('accessToken', access);
-            localStorage.setItem('refreshToken', refresh);
-            console.log("login success")
+            localStorage.setItem('refreshToken', refresh);            
             navigate("/")
         }catch(e){
             console.log(e)

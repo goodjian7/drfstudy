@@ -1,22 +1,29 @@
+import { useState, useEffect } from "react"
 import { Outlet, Link, useNavigate } from "react-router-dom"
-import authAxios, { isTokenExpired } from "../utils/authAxios"
-
-
+import authAxios, { isTokenExpired, isLoggedIn } from "../utils/authAxios"
 
 const Layout = ()=>{       
-    const navigate = useNavigate()
+    const navigate = useNavigate()        
+    let [bLoggedIn, setBLoggedIn] = useState(false)
     const refreshToken = localStorage.getItem("refreshToken")
     let bRefreshTokenExpired = isTokenExpired(refreshToken)
 
+    useEffect(()=>{
+        console.log("Layout useEffect")
+        const isLoggedInDelegate = async()=>{            
+            setBLoggedIn(await isLoggedIn())            
+        }
+        isLoggedInDelegate()        
+    })
+
     const onLogoutClicked = async (e)=>{
         try{
-            let response = await authAxios.post("/api/common/token/expire/", {refreshToken})
-            
+            let response = await authAxios.post("/api/common/token/expire/", {refreshToken})            
         }catch(e){
             
         }
         localStorage.removeItem("accessToken")
-        localStorage.removeItem("refreshToken")
+        localStorage.removeItem("refreshToken")        
         navigate("/")
     }
     
@@ -44,9 +51,9 @@ const Layout = ()=>{
                     <li className="nav-item">
                         
                         {
-                            bRefreshTokenExpired ? 
-                            <Link className="nav-link" to="/user/login" style={{whiteSpace:"nowrap"}}>로그인</Link> 
-                            :<Link className="nav-link" onClick={onLogoutClicked}>로그아웃</Link>                            
+                            bLoggedIn ? 
+                            <Link className="nav-link" onClick={onLogoutClicked} style={{whiteSpace:"nowrap"}}>로그아웃</Link>                  
+                            :<Link className="nav-link" to="/user/login" style={{whiteSpace:"nowrap"}}>로그인</Link>                                       
                         }
                     </li>
                 </ul>

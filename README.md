@@ -44,4 +44,5 @@ wikidocs jumptofastapi pybo 프로젝트를 drf+react로 구현합니다.
 - djangoorestframework-simplejwt으로 로그아웃 기능 구현
 - djangoorestframework-simplejwt으로 API Auth와 Permission 추가
 - Question, Answer모델을 Admin에 추가
+- Authorization 헤더를 쉽게 쓰기위한 authAxios util함수 추가
 
