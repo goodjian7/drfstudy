@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
+import authAxios from "../utils/authAxios"
 
 const UserCreate = ()=>{
     const apiUrl = import.meta.env.VITE_API_URL 
@@ -19,6 +20,7 @@ const UserCreate = ()=>{
         }
         catch(e){            
             let newErrorMessages = []
+            console.log(e)
             for (const key in e.response.data.error) {                
                 let strError = `${key} : ` + e.response.data.error[key][0]
                 newErrorMessages.push(strError)
