@@ -41,8 +41,12 @@ const QuestionCreate = ()=>{
                     })
                     setQuestionInfo(newQuestionInfo)
                 }
-            }catch(e){                
-                setErrorMessage("질문등록중 오류가 발생되었습니다.")
+            }catch(e){                                
+                if(e.response.status === 401){
+                    setErrorMessage("질문등록중 로그인 상태가 만료되었습니다. 로그아웃후 다시 로그인 해주세요.")
+                }else{
+                    setErrorMessage("질문등록중 오류가 발생되었습니다.")
+                }
             }
 
         }

@@ -3,18 +3,9 @@ import { Outlet, Link, useNavigate } from "react-router-dom"
 import authAxios, { isTokenExpired, isLoggedIn } from "../utils/authAxios"
 
 const Layout = ()=>{       
-    const navigate = useNavigate()        
-    let [bLoggedIn, setBLoggedIn] = useState(false)
+    const navigate = useNavigate()            
     const refreshToken = localStorage.getItem("refreshToken")
     let bRefreshTokenExpired = isTokenExpired(refreshToken)
-
-    useEffect(()=>{
-        console.log("Layout useEffect")
-        const isLoggedInDelegate = async()=>{            
-            setBLoggedIn(await isLoggedIn())            
-        }
-        isLoggedInDelegate()        
-    })
 
     const onLogoutClicked = async (e)=>{
         try{
@@ -51,7 +42,7 @@ const Layout = ()=>{
                     <li className="nav-item">
                         
                         {
-                            bLoggedIn ? 
+                            !bRefreshTokenExpired ? 
                             <Link className="nav-link" onClick={onLogoutClicked} style={{whiteSpace:"nowrap"}}>로그아웃</Link>                  
                             :<Link className="nav-link" to="/user/login" style={{whiteSpace:"nowrap"}}>로그인</Link>                                       
                         }

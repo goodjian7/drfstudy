@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate, Link } from "react-router-dom"
 import classNames from "classnames";
 import {rangeFromTo} from "../utils"
+import { isTokenExpired, isLoggedIn } from "../utils/authAxios";
 import moment from 'moment/min/moment-with-locales'
 moment.locale("ko")
 
@@ -9,6 +10,19 @@ const QuestionList = ({questionList, pageIndex, displayCount, totalCount,})=>{
     let minPageIndex = 0
     let maxPageIndex = Math.ceil(totalCount/displayCount)    
     const navigate = useNavigate()   
+    const refreshToken = localStorage.getItem("refreshToken")
+    let bRefreshTokenExpired = isTokenExpired(refreshToken)
+
+    const onNewQuestionClick = async (e)=>{
+        const bLoggedin = await isLoggedIn()
+        if(bLoggedin){
+            navigate("/question-create")
+        }else{
+            localStorage.removeItem("refreshToken")
+            localStorage.removeItem("accessToken")
+            navigate("user/login")
+        }
+    }
 
     questionList = questionList || []    
     return (
@@ -97,8 +111,11 @@ const QuestionList = ({questionList, pageIndex, displayCount, totalCount,})=>{
                 </ul>
                 {/* 페이징 처리 끝 */}
 
-                {/* 새 질문 등록 */}
-                <Link className="btn btn-primary" to="/question-create">add</Link>                
+                <div>                
+                {                
+                    <span className="btn btn-primary" onClick={onNewQuestionClick}>새 글 쓰기</span>                
+                }
+                </div>
             </div>                    
         </>
     );
