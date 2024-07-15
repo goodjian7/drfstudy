@@ -29,10 +29,21 @@ const QuestionCreate = ()=>{
                 return
         }
 
+        let userName = localStorage.getItem("userName")
+        console.log(userName)
+        if(isNullOrEmptyOrSpace(userName)){
+           setErrorMessage("로그인이 필요합니다.")
+           return 
+        }
+
         const sendCreateRequest = async()=>{
             try{
+                let requestBody = {...questionInfo, user:userName}
+                console.log(requestBody)
+                
                 let endpoint = `/api/pybo/question/`        
-                let response = await authAxios.post(endpoint, questionInfo)   
+                let response = await authAxios.post(endpoint, requestBody)   
+                console.log("aaa")
                 if(response.status===201){                
                     setErrorMessage("등록됨")
                     let newQuestionInfo=produce(questionInfo, (draft)=>{

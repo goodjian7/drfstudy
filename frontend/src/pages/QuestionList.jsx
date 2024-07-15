@@ -33,6 +33,7 @@ const QuestionList = ({questionList, pageIndex, displayCount, totalCount,})=>{
                         <tr className="table-dark">
                             <th>번호</th>
                             <th>제목</th>
+                            <th>작성자</th>
                             <th>작성일자</th>
                         </tr>
                     </thead>
@@ -53,6 +54,7 @@ const QuestionList = ({questionList, pageIndex, displayCount, totalCount,})=>{
                                             }
                                             
                                         </td>
+                                        <td>{question.username}</td>
                                         <td>{moment(question.create_date).format("YYYY년 MM월 DD일 hh:mm a")}</td>                                    
                                     </tr>                             
                                 );

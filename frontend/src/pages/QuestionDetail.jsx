@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import authAxios from "../utils/authAxios";
 import moment from 'moment/min/moment-with-locales'
+import { isNullOrEmptyOrSpace } from "../utils";
 moment.locale("ko")
 
 const QuestionDetail = () => {
@@ -37,8 +38,21 @@ const QuestionDetail = () => {
                 setErrorMessage("공백은 사용할 수 없습니다.")
                 return
             }
+                        
+            let userName = localStorage.getItem("userName")
+            if(isNullOrEmptyOrSpace(userName)){
+                setErrorMessage("로그인후 답변등록 가능")
+                return
+            }
 
-            let response = await authAxios.post("/api/pybo/answer/", {content:newAnswerContent, question:question_id})  
+            let requestBody = {
+                content:newAnswerContent, 
+                question:question_id,
+                user:userName,
+            }            
+            
+            let response = await authAxios.post("/api/pybo/answer/", requestBody)
+                        
             await getQuestionInfo()
             setErrorMessage("")
             setNewAnswerContent("")                    
@@ -69,6 +83,7 @@ const QuestionDetail = () => {
                             {questionInfo.content}
                         </div>
                         <div className="d-flex justify-content-end">
+                            <div className="badge bg-light text-dark p-2">{questionInfo.username}</div>
                             <div className="badge bg-light text-dark p-2">
                                 {moment(questionInfo.create_date).format("YYYY년 MM월 DD일 hh:mm a")}
                             </div>
@@ -89,6 +104,7 @@ const QuestionDetail = () => {
                                         {answer.content} 
                                     </div>
                                     <div className="d-flex justify-content-end">
+                                        <div className="badge bg-light text-dark p-2">{answer.username}</div>
                                         <div className="badge bg-light text-dark p-2">
                                             {moment(answer.create_date).format("YYYY년 MM월 DD일 hh:mm a")}
                                         </div>

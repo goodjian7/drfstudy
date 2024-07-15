@@ -1,12 +1,13 @@
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import status, exceptions
 from rest_framework.reverse import reverse
+
 from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from .models import Question, Answer
 from .serializers import QuestionSerializer, AnswerSerializer
 from .paginations import OffsetLimitWithMaxPagination
-
 
 class ApiRoot(APIView):
     permission_classes = [AllowAny]
@@ -22,13 +23,26 @@ class QuestionLC(generics.ListCreateAPIView):
     pagination_class = OffsetLimitWithMaxPagination   
     permission_classes = [IsAuthenticatedOrReadOnly]
 
+    def post(self, request, *args, **kwargs):        
+        if request.user.username == request.data.get("user"):            
+            return self.create(request, *args, **kwargs)        
+        
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
 class QuestionRUD(generics.RetrieveUpdateDestroyAPIView):
     queryset= Question.objects.all()
     serializer_class = QuestionSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+
 class AnswerC(generics.CreateAPIView):
     queryset=Answer.objects.all()
     serializer_class=AnswerSerializer
+    #permission_classes = [AllowAny]
+    def post(self, request, *args, **kwargs):
+        if request.user.username == request.data.get("user"):            
+            return self.create(request, *args, **kwargs)        
+        
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class AnswerRUD(generics.RetrieveUpdateDestroyAPIView):
     queryset=Answer.objects.all()

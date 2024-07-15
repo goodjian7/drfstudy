@@ -13,8 +13,9 @@ const UserLogin=()=>{
         try{
             let response = await authAxios.post("/api/common/token/issue/", credential)
             const {access, refresh} = response.data 
-            localStorage.setItem('accessToken', access);
-            localStorage.setItem('refreshToken', refresh);            
+            localStorage.setItem('accessToken', access)
+            localStorage.setItem('refreshToken', refresh)
+            localStorage.setItem('userName', credential.username)          
             navigate("/")
         }catch(e){
             console.log(e)

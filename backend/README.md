@@ -1,3 +1,5 @@
 # what's done  
-pybo/admin.py에 Question, Answer모델 추가  
-pybo/views.py의 뷰에 적절한 permission 부여  
+- pybo/models.py의 Question,Answer에 User필드추가 및 db에 반영
+- pybo/serializers.py 변경하여 api의 입출력 정보 정의
+- 
+
