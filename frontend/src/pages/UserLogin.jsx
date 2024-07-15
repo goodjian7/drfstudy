@@ -15,7 +15,7 @@ const UserLogin=()=>{
             const {access, refresh} = response.data 
             localStorage.setItem('accessToken', access)
             localStorage.setItem('refreshToken', refresh)
-            localStorage.setItem('userName', credential.username)          
+            //localStorage.setItem('userName', credential.username)          
             navigate("/")
         }catch(e){
             console.log(e)

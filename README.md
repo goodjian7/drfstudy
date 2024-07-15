@@ -47,3 +47,5 @@ wikidocs jumptofastapi pybo 프로젝트를 drf+react로 구현합니다.
 - Authorization 헤더를 쉽게 쓰기위한 authAxios util함수 추가
 - Question, Answer에 유저정보 포함하도록 변경
 - Question, Answer의 유저정보를 UI상에서 표기하도록 변경
+- 직접 유저정보를 frontend에서 기입하지 않도록 변경 (token에 포함)
+- backend에서 request.user를 사용해 사용자정보 사용하도록 변경

@@ -24,10 +24,11 @@ class QuestionLC(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def post(self, request, *args, **kwargs):        
-        if request.user.username == request.data.get("user"):            
+        try:
+            request.data["user"]=request.user.id
             return self.create(request, *args, **kwargs)        
-        
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class QuestionRUD(generics.RetrieveUpdateDestroyAPIView):
     queryset= Question.objects.all()
@@ -37,13 +38,14 @@ class QuestionRUD(generics.RetrieveUpdateDestroyAPIView):
 class AnswerC(generics.CreateAPIView):
     queryset=Answer.objects.all()
     serializer_class=AnswerSerializer
-    #permission_classes = [AllowAny]
-    def post(self, request, *args, **kwargs):
-        if request.user.username == request.data.get("user"):            
-            return self.create(request, *args, **kwargs)        
-        
-        return Response(status=status.HTTP_400_BAD_REQUEST)
 
+    def post(self, request, *args, **kwargs):        
+        try:
+            request.data["user"]=request.user.id
+            return self.create(request, *args, **kwargs)        
+        except Exception as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+    
 class AnswerRUD(generics.RetrieveUpdateDestroyAPIView):
     queryset=Answer.objects.all()
     serializer_class=AnswerSerializer    

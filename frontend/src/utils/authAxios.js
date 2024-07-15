@@ -79,7 +79,7 @@ authAxios.interceptors.request.use(
                 // 갱신 실패시 로컬스토리지의 토큰을 제거하고 auth옵션을 사용하지 않는다.           
                 localStorage.removeItem("accessToken")     
                 localStorage.removeItem("refreshToken")
-                localStorage.removeItem("userName")
+                //localStorage.removeItem("userName")
                 return config
             }
         }

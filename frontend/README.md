@@ -1,4 +1,4 @@
 # what's done
-- 로그인에 성공하면 로그인에 사용한 username을 로컬스토리지에 저장
-- refresh이 실패하거나 로그아웃하면 username을 제거
-- 기다 Question, Answer 모델에 추가된 user정보를 반영하도록 코드와 UI 수정
+- 유저가 직접 username을 json에 넣어 request발송하지 않도록 변경  
+  token에 User.id가 이미 들어 있음.
+- localStorage에 있는 userName항목을 사용하지 않도록 변경

@@ -37,18 +37,11 @@ const QuestionDetail = () => {
             if(newAnswerContent.trim() === ""){
                 setErrorMessage("공백은 사용할 수 없습니다.")
                 return
-            }
-                        
-            let userName = localStorage.getItem("userName")
-            if(isNullOrEmptyOrSpace(userName)){
-                setErrorMessage("로그인후 답변등록 가능")
-                return
-            }
+            }                                    
 
             let requestBody = {
                 content:newAnswerContent, 
-                question:question_id,
-                user:userName,
+                question:question_id,                
             }            
             
             let response = await authAxios.post("/api/pybo/answer/", requestBody)

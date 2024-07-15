@@ -27,18 +27,11 @@ const QuestionCreate = ()=>{
             isNullOrEmptyOrSpace(questionInfo.content)){
                 setErrorMessage("공백은 허용되지 않습니다.")
                 return
-        }
-
-        let userName = localStorage.getItem("userName")
-        console.log(userName)
-        if(isNullOrEmptyOrSpace(userName)){
-           setErrorMessage("로그인이 필요합니다.")
-           return 
-        }
+        }       
 
         const sendCreateRequest = async()=>{
             try{
-                let requestBody = {...questionInfo, user:userName}
+                let requestBody = {...questionInfo}
                 console.log(requestBody)
                 
                 let endpoint = `/api/pybo/question/`        
