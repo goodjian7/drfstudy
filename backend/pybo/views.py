@@ -5,8 +5,8 @@ from rest_framework import status, exceptions
 from rest_framework.reverse import reverse
 
 from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
-from .models import Question, Answer
-from .serializers import QuestionSerializer, AnswerSerializer
+from .models import Question, Answer, QuestionVoter, AnswerVoter
+from .serializers import QuestionSerializer, AnswerSerializer, QuestionVoterSerializer, AnswerVoterSerializer
 from .paginations import OffsetLimitWithMaxPagination
 from .permissios import IsAuthorOrReadOnly
 
@@ -51,3 +51,22 @@ class AnswerRUD(generics.RetrieveUpdateDestroyAPIView):
     queryset=Answer.objects.all()
     serializer_class=AnswerSerializer    
     permission_classes=[IsAuthorOrReadOnly]
+
+class QuestionVoterLC(generics.ListCreateAPIView):
+    queryset=QuestionVoter.objects.all()
+    serializer_class=QuestionVoterSerializer
+    permission_classes = [AllowAny]
+
+class QuestionVoterRD(generics.RetrieveDestroyAPIView):
+    queryset=QuestionVoter.objects.all()
+    serializer_class=QuestionVoterSerializer
+    permission_classes = [AllowAny]
+
+class AnswerVoterLC(generics.ListCreateAPIView):
+    queryset=AnswerVoter.objects.all()
+    serializer_class=AnswerVoterSerializer
+    permission_classes = [AllowAny]
+class AnswerVoterRD(generics.RetrieveDestroyAPIView):    
+    queryset=AnswerVoter.objects.all()    
+    serializer_class=AnswerVoterSerializer
+    permission_classes = [AllowAny]

@@ -239,39 +239,40 @@ const QuestionDetail = () => {
                                             {moment(answer.create_date).format("YYYY년 MM월 DD일 hh:mm a")}
                                         </div>
                                     </div>
-                                </div>
+                                
 
-                                {
-                                    answerEditFormInfo.visible &&
-                                    <form>                                        
-                                        <textarea 
-                                            id="answerEditContent"
-                                            className="form-control" 
-                                            rows="10" 
-                                            value={answerEditFormInfo.content}
-                                            onChange={onAnswerEditFormChanged}
-                                            />
-                                        <div className="d-flex justify-content-end">
-                                            <input                                         
-                                                className="form-control btn btn-outline-primary" 
-                                                type="button" 
-                                                value="확인"
-                                                onClick={(e)=>onAnswerEditConfirmClicked(e,answer.id)}                                        
+                                    {
+                                        answerEditFormInfo.visible &&
+                                        <form>                                        
+                                            <textarea 
+                                                id="answerEditContent"
+                                                className="form-control" 
+                                                rows="10" 
+                                                value={answerEditFormInfo.content}
+                                                onChange={onAnswerEditFormChanged}
                                                 />
-                                            <input                                         
-                                                className="form-control btn btn-outline-secondary" 
-                                                type="button" 
-                                                value="취소"
-                                                onClick={onAnswerEditCancleClicked}
-                                                
-                                                />
-                                        </div>
-                                    </form> 
-                                }
+                                            <div className="d-flex justify-content-end">
+                                                <input                                         
+                                                    className="form-control btn btn-outline-primary" 
+                                                    type="button" 
+                                                    value="확인"
+                                                    onClick={(e)=>onAnswerEditConfirmClicked(e,answer.id)}                                        
+                                                    />
+                                                <input                                         
+                                                    className="form-control btn btn-outline-secondary" 
+                                                    type="button" 
+                                                    value="취소"
+                                                    onClick={onAnswerEditCancleClicked}
+                                                    
+                                                    />
+                                            </div>
+                                        </form> 
+                                    }
 
-                                <div className="d-flex justify-content-end">
-                                    <button className="btn btn-outline-primary" onClick={(e)=>onAnswerEditClicked(e,answer.content)}>수정</button>
-                                    <button className="btn btn-outline-danger" onClick={(e)=>onAnswerDeleteClicked(e, answer.id)}>삭제</button>
+                                    <div className="d-flex justify-content-end">
+                                        <button className="btn btn-outline-primary" onClick={(e)=>onAnswerEditClicked(e,answer.content)}>수정</button>
+                                        <button className="btn btn-outline-danger" onClick={(e)=>onAnswerDeleteClicked(e, answer.id)}>삭제</button>
+                                    </div>
                                 </div>
                             </div>                                                                                                              
                         )
