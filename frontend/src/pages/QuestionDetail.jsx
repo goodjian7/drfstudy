@@ -1,19 +1,23 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import authAxios from "../utils/authAxios";
 import moment from 'moment/min/moment-with-locales'
 import { isNullOrEmptyOrSpace } from "../utils";
+import { produce } from "immer";
 moment.locale("ko")
 
 const QuestionDetail = () => {
     let params = useParams()
     let question_id = params?.question_id
-    const apiUrl = import.meta.env.VITE_API_URL    
+    const navigate = useNavigate()
 
     let [questionInfo, setQuestionInfo] = useState({})
     let [answerList, setAnswerList] = useState([])
     let [newAnswerContent, setNewAnswerContent] = useState("")
     let [errorMessage, setErrorMessage] = useState("")
+    let [questionEditFormInfo, setQuestionEditFormInfo] = useState({visible:false,  subject:"", content:"",})
+    let [answerEditFormInfo, setAnswerEditFormInfo] = useState({visible:false, content:"",})
+    
 
     const getQuestionInfo = async ()=>{
         try{
@@ -60,6 +64,97 @@ const QuestionDetail = () => {
         }        
     }
 
+    const onQuestionEditClicked = ()=>{
+        setQuestionEditFormInfo({visible:true, subject:questionInfo.subject, content:questionInfo.content,})
+    }
+
+    const onQuestionEditFormChanged = (e)=>{                
+        let newQuestionEditFormInfo = {...questionEditFormInfo}
+        switch(e.target.id){
+            case "questionEditSubject":
+                newQuestionEditFormInfo.subject = e.target.value
+                break
+            case "questionEditContent":
+                newQuestionEditFormInfo.content = e.target.value
+                break
+            default:
+                break
+        }
+        setQuestionEditFormInfo(newQuestionEditFormInfo)        
+    }
+
+    const onQuestionEidtConfirmClicked = async (e)=>{
+        e.preventDefault()
+        try{            
+            setQuestionEditFormInfo({visible:false, subject:"", content:"",})
+            let respose = await authAxios.put(`/api/pybo/question/${question_id}/`, questionEditFormInfo)
+            await getQuestionInfo()
+        }
+        catch(err){
+            console.log("error : ")
+            console.log(err)
+        }
+    }
+
+    const onQuestionEditCancleClciked = (e)=>{
+        e.preventDefault()
+        setQuestionEditFormInfo({visible:false, subject:"", content:"",})
+    }
+
+    const onQuestionDeleteClicked = async ()=>{
+        try{
+            let response = await authAxios.delete(`/api/pybo/question/${question_id}/`)
+            navigate("/?page=0")
+        }catch(e){
+            console.log("error : ")
+            console.log(e)
+        }
+    }
+
+    const onAnswerEditClicked = (e, answerContent)=>{
+        setAnswerEditFormInfo({visible:true, contnet:answerContent})
+    }
+
+    const onAnswerEditFormChanged = (e)=>{        
+        let newAnswerEditFormInfo = {...answerEditFormInfo}
+        switch(e.target.id){            
+            case "answerEditContent":
+                newAnswerEditFormInfo.content = e.target.value
+                break
+            default:
+                break
+        }
+        setAnswerEditFormInfo(newAnswerEditFormInfo)        
+    }
+
+    const onAnswerEditConfirmClicked =async (e, answer_id)=>{        
+        e.preventDefault()
+        try{            
+            setAnswerEditFormInfo({visible:false, content:"",})
+            let respose = await authAxios.put(`/api/pybo/answer/${answer_id}/`, {...answerEditFormInfo, question:question_id})
+            await getQuestionInfo()
+        }
+        catch(err){
+            console.log("error : ")
+            console.log(err)
+        }
+    }
+
+    const onAnswerEditCancleClicked = ()=>{
+        setAnswerEditFormInfo({visible:false, contnet:""})
+    }
+
+    const onAnswerDeleteClicked =async(e, answer_id)=>{
+        e.preventDefault()
+        try{
+            let response = await authAxios.delete(`/api/pybo/answer/${answer_id}/`)
+            await getQuestionInfo()
+        }catch(e){
+            console.log("error : ")
+            console.log(e)
+        }
+    }
+
     useEffect(()=>{
         getQuestionInfo()                        
     },[])
@@ -81,8 +176,50 @@ const QuestionDetail = () => {
                                 {moment(questionInfo.create_date).format("YYYY년 MM월 DD일 hh:mm a")}
                             </div>
                         </div>
-                    </div>                    
+                        {
+                            questionEditFormInfo.visible &&
+                            <form>
+                                <input 
+                                    id="questionEditSubject"
+                                    type="text" 
+                                    className="form-control" 
+                                    value={questionEditFormInfo.subject}
+                                    onChange={onQuestionEditFormChanged}
+                                    />
+                                <textarea 
+                                    id="questionEditContent"
+                                    className="form-control" 
+                                    rows="10" 
+                                    value={questionEditFormInfo.content}
+                                    onChange={onQuestionEditFormChanged}
+                                    />
+                                <div className="d-flex justify-content-end">
+                                    <input                                         
+                                        className="form-control btn btn-outline-primary" 
+                                        type="button" 
+                                        value="확인"
+                                        onClick={onQuestionEidtConfirmClicked}                                        
+                                        />
+                                    <input                                         
+                                        className="form-control btn btn-outline-secondary" 
+                                        type="button" 
+                                        value="취소"
+                                        onClick={onQuestionEditCancleClciked}
+                                        
+                                        />
+                                </div>
+                            </form>                    
+                        }
+
+                        {/* 수정&삭제 */}
+                        <div className="d-flex justify-content-end">
+                            <button className="btn btn-outline-primary" onClick={onQuestionEditClicked}>수정</button>
+                            <button className="btn btn-outline-danger" onClick={onQuestionDeleteClicked}>삭제</button>
+                        </div>
+                    </div>                                        
                 </div>
+
+                
                 
                 {/* 답변목록 */}
                 <div className="border-bottom my-3 py-2">
@@ -90,7 +227,7 @@ const QuestionDetail = () => {
                 </div>         
                 {
                     answerList.map((answer)=>{
-                        return(                            
+                        return(                               
                             <div className="card my-3" key={answer.id}>
                                 <div className="card-body">
                                     <div className="card-text" style={{whiteSpace:"preLine"}}>
@@ -103,11 +240,45 @@ const QuestionDetail = () => {
                                         </div>
                                     </div>
                                 </div>
-                            </div>                            
+
+                                {
+                                    answerEditFormInfo.visible &&
+                                    <form>                                        
+                                        <textarea 
+                                            id="answerEditContent"
+                                            className="form-control" 
+                                            rows="10" 
+                                            value={answerEditFormInfo.content}
+                                            onChange={onAnswerEditFormChanged}
+                                            />
+                                        <div className="d-flex justify-content-end">
+                                            <input                                         
+                                                className="form-control btn btn-outline-primary" 
+                                                type="button" 
+                                                value="확인"
+                                                onClick={(e)=>onAnswerEditConfirmClicked(e,answer.id)}                                        
+                                                />
+                                            <input                                         
+                                                className="form-control btn btn-outline-secondary" 
+                                                type="button" 
+                                                value="취소"
+                                                onClick={onAnswerEditCancleClicked}
+                                                
+                                                />
+                                        </div>
+                                    </form> 
+                                }
+
+                                <div className="d-flex justify-content-end">
+                                    <button className="btn btn-outline-primary" onClick={(e)=>onAnswerEditClicked(e,answer.content)}>수정</button>
+                                    <button className="btn btn-outline-danger" onClick={(e)=>onAnswerDeleteClicked(e, answer.id)}>삭제</button>
+                                </div>
+                            </div>                                                                                                              
                         )
                     })
-
                 }
+
+                
 
                 {/* 답변등록 */}
                 <div>{errorMessage}</div>
@@ -118,7 +289,7 @@ const QuestionDetail = () => {
                         style={{width:"100%"}}
                         className="btn btn-primary"
                         type="submit" 
-                        value="add" 
+                        value="답변등록" 
                         onClick={onAnswerAddClicked} 
                     />
                     </div>

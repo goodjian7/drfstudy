@@ -43,7 +43,7 @@ const QuestionList = ({questionList, pageIndex, displayCount, totalCount,})=>{
                                 return(
                                     <tr key={idx}>
                                         <td>{totalCount - (pageIndex * displayCount) - idx}</td>                            
-                                        <td>
+                                        <td className="w-50">
                                             <Link to={`/detail/${question.id}`}>{question.subject}</Link>                                            
                                             
                                             {

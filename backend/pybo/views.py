@@ -8,6 +8,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from .models import Question, Answer
 from .serializers import QuestionSerializer, AnswerSerializer
 from .paginations import OffsetLimitWithMaxPagination
+from .permissios import IsAuthorOrReadOnly
 
 class ApiRoot(APIView):
     permission_classes = [AllowAny]
@@ -33,7 +34,7 @@ class QuestionLC(generics.ListCreateAPIView):
 class QuestionRUD(generics.RetrieveUpdateDestroyAPIView):
     queryset= Question.objects.all()
     serializer_class = QuestionSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthorOrReadOnly]
 
 class AnswerC(generics.CreateAPIView):
     queryset=Answer.objects.all()
@@ -49,3 +50,4 @@ class AnswerC(generics.CreateAPIView):
 class AnswerRUD(generics.RetrieveUpdateDestroyAPIView):
     queryset=Answer.objects.all()
     serializer_class=AnswerSerializer    
+    permission_classes=[IsAuthorOrReadOnly]

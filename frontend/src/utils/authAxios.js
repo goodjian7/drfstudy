@@ -40,17 +40,13 @@ const isTokenExpired = (token) => {
 const refreshToken = async () => {
     try {
       const apiSvr = import.meta.env.VITE_API_URL        
-      const refresh = localStorage.getItem('refreshToken');
-      const apiEndpoint = apiSvr + '/api/common/token/refresh/'      
-      console.log("refresh endpoint : " + apiEndpoint)
-      const response = await axios.post(apiEndpoint, {refresh})     
-  
-      const { access_token, refresh_token } = response.data;
-      localStorage.setItem('accessToken', access_token)
-      localStorage.setItem('refreshToken', refresh_token)
-
-      console.log("refresh success")
-      console.log({access_token, refresh_token})
+      const refreshToken = localStorage.getItem('refreshToken');
+      const apiEndpoint = apiSvr + '/api/common/token/refresh/'            
+      const response = await axios.post(apiEndpoint, {refresh:refreshToken})     
+          
+      const { access, refresh} = response.data;      
+      localStorage.setItem('accessToken', access)
+      localStorage.setItem('refreshToken', refresh)     
 
       return access;
     } catch (error) {

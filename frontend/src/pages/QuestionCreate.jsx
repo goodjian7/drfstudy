@@ -2,10 +2,12 @@ import { useState } from "react"
 import { isNullOrEmptyOrSpace } from "../utils"
 import { produce} from "immer"
 import authAxios from "../utils/authAxios"
+import { useNavigate } from "react-router-dom"
 
 const QuestionCreate = ()=>{    
     let [errorMessage, setErrorMessage] = useState("")
     let [questionInfo, setQuestionInfo] = useState({subject:"", content:""})
+    const navigate = useNavigate()
 
     const onQuestionSubjectChanged = (e)=>{        
         let nextState=produce(questionInfo, draft=>{
@@ -29,14 +31,11 @@ const QuestionCreate = ()=>{
                 return
         }       
 
-        const sendCreateRequest = async()=>{
+        const sendCreateRequest = async ()=>{
             try{
                 let requestBody = {...questionInfo}
-                console.log(requestBody)
-                
                 let endpoint = `/api/pybo/question/`        
-                let response = await authAxios.post(endpoint, requestBody)   
-                console.log("aaa")
+                let response = await authAxios.post(endpoint, requestBody)                   
                 if(response.status===201){                
                     setErrorMessage("등록됨")
                     let newQuestionInfo=produce(questionInfo, (draft)=>{
@@ -44,6 +43,7 @@ const QuestionCreate = ()=>{
                         draft.content=""
                     })
                     setQuestionInfo(newQuestionInfo)
+                    navigate("/?page=0")
                 }
             }catch(e){                                
                 if(e.response.status === 401){
@@ -51,8 +51,8 @@ const QuestionCreate = ()=>{
                 }else{
                     setErrorMessage("질문등록중 오류가 발생되었습니다.")
                 }
+                return false
             }
-
         }
         sendCreateRequest()
     }   
