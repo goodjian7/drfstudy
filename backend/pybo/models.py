@@ -24,6 +24,8 @@ class Answer(models.Model):
     content = models.TextField(null=False)
     create_date = models.DateTimeField(auto_now_add=True)
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers')
+    voters = models.ManyToManyField(User, through="AnswerVoter", related_name='voted_answers')
+
 
     def __str__(self):
         return self.content

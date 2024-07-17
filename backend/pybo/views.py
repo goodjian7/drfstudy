@@ -6,7 +6,7 @@ from rest_framework.reverse import reverse
 
 from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from .models import Question, Answer, QuestionVoter, AnswerVoter
-from .serializers import QuestionSerializer, AnswerSerializer, QuestionVoterSerializer, AnswerVoterSerializer
+from .serializers import QuestionSummarySerializer, QuestionDetailSerializer, AnswerDetailSerializer, QuestionVoterSerializer, AnswerVoterSerializer
 from .paginations import OffsetLimitWithMaxPagination
 from .permissios import IsAuthorOrReadOnly
 
@@ -20,9 +20,10 @@ class ApiRoot(APIView):
 
 class QuestionLC(generics.ListCreateAPIView):
     queryset = Question.objects.all().order_by("-create_date")
-    serializer_class = QuestionSerializer    
+    serializer_class = QuestionSummarySerializer    
     pagination_class = OffsetLimitWithMaxPagination   
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    #permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):        
         try:
@@ -33,12 +34,13 @@ class QuestionLC(generics.ListCreateAPIView):
 
 class QuestionRUD(generics.RetrieveUpdateDestroyAPIView):
     queryset= Question.objects.all()
-    serializer_class = QuestionSerializer
+    serializer_class = QuestionDetailSerializer
     permission_classes = [IsAuthorOrReadOnly]
 
 class AnswerC(generics.CreateAPIView):
     queryset=Answer.objects.all()
-    serializer_class=AnswerSerializer
+    serializer_class=AnswerDetailSerializer
+    permission_classes=[AllowAny]
 
     def post(self, request, *args, **kwargs):        
         try:
@@ -49,7 +51,7 @@ class AnswerC(generics.CreateAPIView):
     
 class AnswerRUD(generics.RetrieveUpdateDestroyAPIView):
     queryset=Answer.objects.all()
-    serializer_class=AnswerSerializer    
+    serializer_class=AnswerDetailSerializer    
     permission_classes=[IsAuthorOrReadOnly]
 
 class QuestionVoterLC(generics.ListCreateAPIView):

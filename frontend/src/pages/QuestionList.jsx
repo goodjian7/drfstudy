@@ -48,8 +48,15 @@ const QuestionList = ({questionList, pageIndex, displayCount, totalCount,})=>{
                                             
                                             {
                                                 question.answers.length > 0 &&
-                                                <span className={classNames("text-danger small mx-2")}>
-                                                    {question.answers.length}                                                
+                                                <span className={classNames("text-secondary small mx-2")}>
+                                                    ┗ {question.answers.length}                                                
+                                                </span>
+                                            }
+
+                                            {
+                                                question.voters.length > 0 &&
+                                                <span className="text-danger small mx-2">
+                                                    ♡ {question.voters.length}
                                                 </span>
                                             }
                                             
@@ -65,6 +72,7 @@ const QuestionList = ({questionList, pageIndex, displayCount, totalCount,})=>{
                 
                 {/* 페이징 처리 시작 */}
                 <ul className="pagination justify-content-center">
+
                     {/* 이전버튼 */}
                     <li className={classNames("page-item", {disabled:pageIndex<=minPageIndex})}>
                         <button 
@@ -95,7 +103,6 @@ const QuestionList = ({questionList, pageIndex, displayCount, totalCount,})=>{
                                 )
                             }
                         })
-
                     }                    
                     
                     {/* 다음버튼 */}
