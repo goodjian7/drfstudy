@@ -1,2 +1,2 @@
 # what's done  
-- Question의 answers내용을 list에선 간략하게, retrieve에선 자세하게 보여주도록 serializer수정
+- QuestionVoterLC수정하여 post로 온 userid와 인증한 userid가 같은지 확인 

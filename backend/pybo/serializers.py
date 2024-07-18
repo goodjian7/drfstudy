@@ -41,7 +41,7 @@ class QuestionVoterSerializer(serializers.ModelSerializer):
     question=serializers.PrimaryKeyRelatedField(queryset=Question.objects.all())
     class Meta:
         model=QuestionVoter
-        fields=["id", "question", "user",]
+        fields=["id", "question", "user"]               
 
     def create(self, validated_data):
         questionVoter = QuestionVoter.objects.create(**validated_data)
@@ -52,7 +52,8 @@ class AnswerVoterSerializer(serializers.ModelSerializer):
     question=serializers.PrimaryKeyRelatedField(queryset=Answer.objects.all())
     class Meta:
         model=AnswerVoter
-        fields=["id", "answer", "user",]
+        fields=["id", "answer","user"]
+        
 
     def create(self, validated_data):
         answerVoter = AnswerVoter.objects.create(**validated_data)

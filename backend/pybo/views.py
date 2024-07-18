@@ -57,7 +57,16 @@ class AnswerRUD(generics.RetrieveUpdateDestroyAPIView):
 class QuestionVoterLC(generics.ListCreateAPIView):
     queryset=QuestionVoter.objects.all()
     serializer_class=QuestionVoterSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticatedOrReadOnly]        
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+        if request.data["user"] != request.user.id:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+        return self.create(request, *args, **kwargs)
 
 class QuestionVoterRD(generics.RetrieveDestroyAPIView):
     queryset=QuestionVoter.objects.all()
@@ -68,6 +77,7 @@ class AnswerVoterLC(generics.ListCreateAPIView):
     queryset=AnswerVoter.objects.all()
     serializer_class=AnswerVoterSerializer
     permission_classes = [AllowAny]
+
 class AnswerVoterRD(generics.RetrieveDestroyAPIView):    
     queryset=AnswerVoter.objects.all()    
     serializer_class=AnswerVoterSerializer

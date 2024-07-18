@@ -50,3 +50,4 @@ wikidocs jumptofastapi pybo 프로젝트를 drf+react로 구현합니다.
 - 직접 유저정보를 frontend에서 기입하지 않도록 변경 (token에 포함)
 - backend에서 request.user를 사용해 사용자정보 사용하도록 변경
 - Question, Answer 수정삭제기능 추가
+- like 기능 추가 

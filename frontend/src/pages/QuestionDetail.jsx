@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import authAxios from "../utils/authAxios";
+import authAxios, { getUserIdFromToken } from "../utils/authAxios";
 import moment from 'moment/min/moment-with-locales'
 import { isNullOrEmptyOrSpace } from "../utils";
 import { produce } from "immer";
@@ -22,9 +22,10 @@ const QuestionDetail = () => {
     const getQuestionInfo = async ()=>{
         try{
             let endpoint = `/api/pybo/question/${question_id}/`            
-            let response=await authAxios.get(endpoint)            
+            let response=await authAxios.get(endpoint)      
+                        
             setQuestionInfo(response.data)        
-            setAnswerList(response.data.answers)    
+            setAnswerList(response.data.answers)                
         }
         catch(error){
             console.log("error while getQuestionInfo")
@@ -155,6 +156,33 @@ const QuestionDetail = () => {
         }
     }
 
+    const onLikeQuestion = async ()=>{
+        const refreshToken = localStorage.getItem("refreshToken")
+        const userId = getUserIdFromToken(refreshToken)
+        // 이미 추천한 경우
+        if(questionInfo?.voters && questionInfo?.voters.some(ele=>ele===userId)){
+            console.log("이미 추천함")
+        }
+        // 추천하지 않은 경우
+        else{
+            let response = await authAxios.post("/api/pybo/vote/question/", {question:question_id, user:userId})
+            console.log(response.data)
+            await getQuestionInfo()
+        }
+    }
+
+    const onLickeAnswer = (e, answerId)=>{
+        let answerInfo = questionInfo.answers[answerId]
+        // 이미 추천한 경우
+        if(answerInfo?.voters && answerInfo.voters.some(ele=>ele===userId)){
+
+        }
+        // 추천하지 않은 경우
+        else{
+
+        }
+    }
+
     useEffect(()=>{
         getQuestionInfo()                        
     },[])
@@ -176,6 +204,8 @@ const QuestionDetail = () => {
                                 {moment(questionInfo.create_date).format("YYYY년 MM월 DD일 hh:mm a")}
                             </div>
                         </div>
+
+                        {/* 질문수정UI */}
                         {
                             questionEditFormInfo.visible &&
                             <form>
@@ -209,13 +239,26 @@ const QuestionDetail = () => {
                                         />
                                 </div>
                             </form>                    
-                        }
+                        }      
+                        <span className="d-flex justify-content-between">        
+                            {/* 좋아요*/}
+                            <span 
+                                className="btn btn-outline-secondary"
+                                onClick={onLikeQuestion}
+                            >
+                                좋아요 
+                                {               
+                                    questionInfo?.voters?.length > 0 && 
+                                    <span className="badge bg-danger mx-1">{questionInfo.voters.length}</span>
+                                }
+                            </span>
 
-                        {/* 수정&삭제 */}
-                        <div className="d-flex justify-content-end">
-                            <button className="btn btn-outline-primary" onClick={onQuestionEditClicked}>수정</button>
-                            <button className="btn btn-outline-danger" onClick={onQuestionDeleteClicked}>삭제</button>
-                        </div>
+                            {/* 수정&삭제 */}                        
+                            <span>
+                                <button className="btn btn-outline-primary" onClick={onQuestionEditClicked}>수정</button>
+                                <button className="btn btn-outline-danger" onClick={onQuestionDeleteClicked}>삭제</button>
+                            </span>
+                        </span>
                     </div>                                        
                 </div>
 
