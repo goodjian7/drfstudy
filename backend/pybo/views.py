@@ -22,8 +22,7 @@ class QuestionLC(generics.ListCreateAPIView):
     queryset = Question.objects.all().order_by("-create_date")
     serializer_class = QuestionSummarySerializer    
     pagination_class = OffsetLimitWithMaxPagination   
-    #permission_classes = [IsAuthenticatedOrReadOnly]
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticatedOrReadOnly]    
 
     def post(self, request, *args, **kwargs):        
         try:
@@ -40,7 +39,7 @@ class QuestionRUD(generics.RetrieveUpdateDestroyAPIView):
 class AnswerC(generics.CreateAPIView):
     queryset=Answer.objects.all()
     serializer_class=AnswerDetailSerializer
-    permission_classes=[AllowAny]
+    permission_classes=[IsAuthenticatedOrReadOnly]
 
     def post(self, request, *args, **kwargs):        
         try:
@@ -68,17 +67,48 @@ class QuestionVoterLC(generics.ListCreateAPIView):
         
         return self.create(request, *args, **kwargs)
 
-class QuestionVoterRD(generics.RetrieveDestroyAPIView):
+class QuestionVoterRD(generics.DestroyAPIView):
     queryset=QuestionVoter.objects.all()
     serializer_class=QuestionVoterSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthorOrReadOnly]
+
+    def delete(self,request,*args, **kwargs):
+        if not request.user.is_authenticated:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+                
+        instance = self.get_object()
+        if instance.user != request.user:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class AnswerVoterLC(generics.ListCreateAPIView):
     queryset=AnswerVoter.objects.all()
     serializer_class=AnswerVoterSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+        if request.data["user"] != request.user.id:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+        return self.create(request, *args, **kwargs)
 
 class AnswerVoterRD(generics.RetrieveDestroyAPIView):    
     queryset=AnswerVoter.objects.all()    
     serializer_class=AnswerVoterSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthorOrReadOnly]
+
+    def delete(self,request,*args, **kwargs):
+        if not request.user.is_authenticated:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+                
+        instance = self.get_object()
+        if instance.user != request.user:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)

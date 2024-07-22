@@ -159,27 +159,56 @@ const QuestionDetail = () => {
     const onLikeQuestion = async ()=>{
         const refreshToken = localStorage.getItem("refreshToken")
         const userId = getUserIdFromToken(refreshToken)
+
         // 이미 추천한 경우
-        if(questionInfo?.voters && questionInfo?.voters.some(ele=>ele===userId)){
-            console.log("이미 추천함")
+        if(questionInfo?.voters && questionInfo?.voters.some(ele=>ele.user===userId)){
+            let questionVoteId = questionInfo.voters.find((value, index, obj)=>value.user === userId)
+            questionVoteId = questionVoteId.id
+
+            try{
+                let response = await authAxios.delete(`/api/pybo/vote/question/${questionVoteId}`)
+                await getQuestionInfo()
+
+            }catch(e){
+                console.log(e)
+            }
         }
         // 추천하지 않은 경우
-        else{
-            let response = await authAxios.post("/api/pybo/vote/question/", {question:question_id, user:userId})
-            console.log(response.data)
-            await getQuestionInfo()
+        else{            
+            try{
+                let response = await authAxios.post("/api/pybo/vote/question/", {question:question_id, user:userId})           
+                await getQuestionInfo()
+            }catch(e){
+                console.log(e)
+            }
         }
     }
 
-    const onLickeAnswer = (e, answerId)=>{
-        let answerInfo = questionInfo.answers[answerId]
+    const onLikeAnswer = async (e, answerId)=>{
+        let answerInfo = questionInfo.answers.find((value, index, obj)=> value?.id === answerId)                
+        const refreshToken = localStorage.getItem("refreshToken")
+        const userId = getUserIdFromToken(refreshToken)     
+        
         // 이미 추천한 경우
-        if(answerInfo?.voters && answerInfo.voters.some(ele=>ele===userId)){
-
+        if(answerInfo?.voters && answerInfo.voters.some(ele=>ele.user===userId)){
+            let answerVote = answerInfo.voters.find((value, index, obj)=>value.user===userId)
+            let answerVoteId = answerVote.id
+            try{
+                let response = await authAxios.delete(`/api/pybo/vote/answer/${answerVoteId}`)
+                await getQuestionInfo()
+            }catch(err){
+                console.log(err)
+            }
         }
         // 추천하지 않은 경우
         else{
-
+            try{
+                let body = {answer:answerId, user:userId}                
+                let response = await authAxios.post("/api/pybo/vote/answer/", body)           
+                await getQuestionInfo()
+            }catch(e){
+                console.log(e)
+            }
         }
     }
 
@@ -283,7 +312,7 @@ const QuestionDetail = () => {
                                         </div>
                                     </div>
                                 
-
+                                    {/* 답변 수정 폼 */}
                                     {
                                         answerEditFormInfo.visible &&
                                         <form>                                        
@@ -312,10 +341,25 @@ const QuestionDetail = () => {
                                         </form> 
                                     }
 
-                                    <div className="d-flex justify-content-end">
-                                        <button className="btn btn-outline-primary" onClick={(e)=>onAnswerEditClicked(e,answer.content)}>수정</button>
-                                        <button className="btn btn-outline-danger" onClick={(e)=>onAnswerDeleteClicked(e, answer.id)}>삭제</button>
-                                    </div>
+                                    <span className="d-flex justify-content-between"> 
+                                        {/* 답변 좋아요*/}
+                                        <span 
+                                            className="btn btn-outline-secondary"
+                                            onClick={(e)=>onLikeAnswer(e, answer.id)}
+                                        >
+                                            좋아요 
+                                            {               
+                                                answer?.voters?.length > 0 && 
+                                                <span className="badge bg-danger mx-1">{answer.voters.length}</span>
+                                            }
+                                        </span>
+
+                                        {/* 답변 수정삭제 */}
+                                        <span className="d-flex justify-content-end">
+                                            <button className="btn btn-outline-primary" onClick={(e)=>onAnswerEditClicked(e,answer.content)}>수정</button>
+                                            <button className="btn btn-outline-danger" onClick={(e)=>onAnswerDeleteClicked(e, answer.id)}>삭제</button>
+                                        </span>
+                                    </span>
                                 </div>
                             </div>                                                                                                              
                         )
