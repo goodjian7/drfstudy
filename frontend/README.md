@@ -1,3 +1,4 @@
 # what's done
-- Question, Answer Like UI와 backend통신 로직 구현 
+- react-markdown 패키지 설치
+- questionDetail페이지 수정해서 Question, Answer내용에 마크다운 적용되도록 변경 
  

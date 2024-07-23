@@ -4,6 +4,8 @@ import authAxios, { getUserIdFromToken } from "../utils/authAxios";
 import moment from 'moment/min/moment-with-locales'
 import { isNullOrEmptyOrSpace } from "../utils";
 import { produce } from "immer";
+import Markdown from "react-markdown"
+
 moment.locale("ko")
 
 const QuestionDetail = () => {
@@ -225,7 +227,7 @@ const QuestionDetail = () => {
                 <div className="card my-3">
                     <div className="card-body">
                         <div className="card-text" style={{whiteSpace:"preLine"}}>
-                            {questionInfo.content}
+                            <Markdown>{questionInfo.content}</Markdown>
                         </div>
                         <div className="d-flex justify-content-end">
                             <div className="badge bg-light text-dark p-2">{questionInfo.username}</div>
@@ -303,7 +305,7 @@ const QuestionDetail = () => {
                             <div className="card my-3" key={answer.id}>
                                 <div className="card-body">
                                     <div className="card-text" style={{whiteSpace:"preLine"}}>
-                                        {answer.content} 
+                                        <Markdown>{answer.content}</Markdown>
                                     </div>
                                     <div className="d-flex justify-content-end">
                                         <div className="badge bg-light text-dark p-2">{answer.username}</div>
