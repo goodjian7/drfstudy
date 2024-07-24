@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { useNavigate, Link } from "react-router-dom"
 import classNames from "classnames";
 import {rangeFromTo} from "../utils"
@@ -6,10 +6,12 @@ import { isTokenExpired, isLoggedIn } from "../utils/authAxios";
 import moment from 'moment/min/moment-with-locales'
 moment.locale("ko")
 
-const QuestionList = ({questionList, pageIndex, displayCount, totalCount,})=>{    
+const QuestionList = ({questionList, pageIndex, displayCount, totalCount, searchWord=""})=>{      
     let minPageIndex = 0
     let maxPageIndex = Math.ceil(totalCount/displayCount)    
-    const navigate = useNavigate()   
+    const navigate = useNavigate()       
+    let [searchFormText, setSearchFormText] = useState("")      
+
     const refreshToken = localStorage.getItem("refreshToken")
     let bRefreshTokenExpired = isTokenExpired(refreshToken)
 
@@ -24,10 +26,34 @@ const QuestionList = ({questionList, pageIndex, displayCount, totalCount,})=>{
         }
     }
 
+    const onSearchClicked = ()=>{
+        navigate(`/?search=${searchFormText}`)
+    }
+
+    const onSearchWordChanged=(e)=>{
+        setSearchFormText(e.target.value)
+    }
+
+    useEffect(()=>{        
+        setSearchFormText(searchWord)
+    },[searchWord])
+
     questionList = questionList || []    
     return (
         <>  
-            <div className="container my-3">                
+            <div className="container my-3">      
+                <div className="d-flex justify-content-between my-3">                                                
+                    <span className="btn btn-primary" onClick={onNewQuestionClick}>새 글 쓰기</span>  
+                    <span className="col-6">
+                        <div className="input-group">
+                            <input type="text" className="form-control" value={searchFormText} onChange={onSearchWordChanged}/>
+                            <button className="btn btn-outline-secondary" onClick={onSearchClicked}>
+                                찾기
+                            </button>
+                        </div>
+                    </span>
+                </div>
+
                 <table className="table">
                     <thead>
                         <tr className="table-dark">
@@ -78,7 +104,7 @@ const QuestionList = ({questionList, pageIndex, displayCount, totalCount,})=>{
                         <button 
                             className="page-link"
                             onClick={()=>{                                                               
-                              navigate(`/?page=${pageIndex-1}`) 
+                              navigate(`/?page=${pageIndex-1}&search=${searchWord}`) 
                             }}
                         >
                             이전
@@ -89,13 +115,13 @@ const QuestionList = ({questionList, pageIndex, displayCount, totalCount,})=>{
                     {
                         rangeFromTo(-2,3,1).map((idx)=>{                            
                             let newPageIndex = pageIndex + idx
-                            if(newPageIndex >= 0 && newPageIndex <= maxPageIndex){
+                            if(newPageIndex >= 0 && newPageIndex < maxPageIndex){
                                 return(
                                     <li key= {idx }className={classNames("page-item", {active:newPageIndex===pageIndex})}>
                                         <button
                                             className="page-link"
                                             onClick={()=>{
-                                                navigate(`/?page=${newPageIndex}`)
+                                                navigate(`/?page=${newPageIndex}&search=${searchWord}`)
                                             }}>
                                             {newPageIndex}
                                         </button>
@@ -110,7 +136,7 @@ const QuestionList = ({questionList, pageIndex, displayCount, totalCount,})=>{
                         <button 
                             className="page-link"
                             onClick={()=>{                                
-                                navigate(`/?page=${pageIndex+1}`) 
+                                navigate(`/?page=${pageIndex+1}&search=${searchWord}`) 
                             }}
                         >
                             다음
@@ -120,11 +146,7 @@ const QuestionList = ({questionList, pageIndex, displayCount, totalCount,})=>{
                 </ul>
                 {/* 페이징 처리 끝 */}
 
-                <div>                
-                {                
-                    <span className="btn btn-primary" onClick={onNewQuestionClick}>새 글 쓰기</span>                
-                }
-                </div>
+                
             </div>                    
         </>
     );

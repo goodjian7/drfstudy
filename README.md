@@ -52,3 +52,4 @@ wikidocs jumptofastapi pybo 프로젝트를 drf+react로 구현합니다.
 - Question, Answer 수정삭제기능 추가
 - like 기능 추가 (Question, Answer)
 - Question을 md으로 표기기능
+- Question.subject 검색기능

@@ -3,12 +3,15 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, exceptions
 from rest_framework.reverse import reverse
+from django_filters import rest_framework as df
+from rest_framework.filters import OrderingFilter
 
 from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from .models import Question, Answer, QuestionVoter, AnswerVoter
 from .serializers import QuestionSummarySerializer, QuestionDetailSerializer, AnswerDetailSerializer, QuestionVoterSerializer, AnswerVoterSerializer
 from .paginations import OffsetLimitWithMaxPagination
 from .permissios import IsAuthorOrReadOnly
+from .filtersets import QuestionFilter
 
 class ApiRoot(APIView):
     permission_classes = [AllowAny]
@@ -23,6 +26,12 @@ class QuestionLC(generics.ListCreateAPIView):
     serializer_class = QuestionSummarySerializer    
     pagination_class = OffsetLimitWithMaxPagination   
     permission_classes = [IsAuthenticatedOrReadOnly]    
+    filter_backends = [df.DjangoFilterBackend]
+    filterset_class = QuestionFilter    
+    # filter_backends = [df.DjangoFilterBackend, OrderingFilter]
+    # filterset_class = QuestionFilter
+    # ordering_fields = ['id', 'create_date']
+    # ordering = ['-id']
 
     def post(self, request, *args, **kwargs):        
         try:

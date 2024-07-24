@@ -9,8 +9,6 @@ from .serializers import UserRegistrationSerializer, ExpireTokenSerializer
 from rest_framework.validators import ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
 
-
-
 class ApiRoot(APIView):
     permission_classes = [AllowAny]
     def get(self,request):
@@ -48,10 +46,5 @@ class ExpireToken(GenericAPIView):
         
         except ValidationError as e:                
             return Response({"error":e.detail}, status=status.HTTP_400_BAD_REQUEST)
-
-            
-
-
-        
-        
+    
             
