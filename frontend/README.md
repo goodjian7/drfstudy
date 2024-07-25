@@ -1,2 +1,3 @@
 # what's done
-- QuestionList.jsx, Home.jsx에서 검색기능 추가
+- npm run build 
+- dist폴더를 backend/pybo로 이동

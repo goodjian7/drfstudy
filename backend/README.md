@@ -1,2 +1,2 @@
 # what's done  
-- views.py QuestionLC view수정하여 filtering기능 추가 
+- config/urls.py 수정하여 pybo/dist내 파일 배포하도록 수정

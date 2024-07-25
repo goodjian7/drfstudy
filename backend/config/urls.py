@@ -16,10 +16,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+import os
+from django.views.static import serve
 
+def pybo_redirect(request, resource):
+	BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+	BASE_DIR = os.path.dirname(BASE_DIR)
+	resourceDir = os.path.join(BASE_DIR, 'pybo', 'dist')
+	return serve(request, resource, resourceDir)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/common/", include("common.urls")),
-    path("api/pybo/", include("pybo.urls")),    
+    path("api/pybo/", include("pybo.urls")), 
+	path("", lambda r : pybo_redirect(r, 'index.html')),
+	path("<path:resource>/", pybo_redirect),
 ]
