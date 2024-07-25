@@ -13,7 +13,7 @@ from .paginations import OffsetLimitWithMaxPagination
 from .permissios import IsAuthorOrReadOnly
 from .filtersets import QuestionFilter
 
-from django.views import View
+
 
 class ApiRoot(APIView):
     permission_classes = [AllowAny]
@@ -123,4 +123,3 @@ class AnswerVoterRD(generics.RetrieveDestroyAPIView):
 
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
-    
